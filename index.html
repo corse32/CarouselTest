@@ -1,0 +1,240 @@
+e<!doctype html>
+<html>
+	<head>
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<style>
+
+		body, html {
+			width:100%;
+			height:100%;
+
+		}
+
+		body {
+
+			-webkit-perspective: 1100px;
+			-moz-perspective: 1100px;
+			-o-perspective: 1100px;
+			perspective: 1100px;
+		}
+
+	#carousel {
+		width: 100%;
+		height: 100%;
+		left:50%;
+		position: absolute;
+		-webkit-transform: translateZ( -250px ) rotateY( 0deg );
+		-moz-transform: translateZ( -250px ) rotateY( 0deg );
+		-o-transform: translateZ( -250px ) rotateY( 0deg );
+		transform: translateZ( -250px ) rotateY( 0deg );
+		-webkit-transform-style: preserve-3d;
+		-moz-transform-style: preserve-3d;
+		-o-transform-style: preserve-3d;
+		transform-style: preserve-3d;
+		-webkit-transition: -webkit-transform 1ms;
+		-moz-transition: -moz-transform 1ms;
+		-o-transition: -o-transform 1ms;
+		transition: transform 1ms;
+			-webkit-translate-origin:center center;
+
+	}
+
+		.corsipanel {
+			position: absolute;
+			display: block;
+			font-family: Helvetica sans-serif;
+			text-align: center;
+			line-height: 100%;
+			-webkit-translate-origin:center center;
+			-webkit-transition:all 1ms;
+
+		}
+
+		.infopanel {
+
+			position: absolute;
+			height: 50%;
+			width:100%;
+			background: white;
+			top:50%;
+			-webkit-transform:scaleX(0);
+
+		}
+
+
+	</style>
+
+	</head>
+
+	<body>
+		<div id="carousel">
+			<img id="panel1" class="corsipanel"/>
+			<img id="panel2" class="corsipanel"/>
+			<img id="panel3" class="corsipanel"/>
+			<img id="panel4" class="corsipanel"/>
+			<img id="panel5" class="corsipanel"/>
+			<img id="panel6" class="corsipanel"/>
+			<img id="panel7" class="corsipanel"/>
+			<img id="panel8" class="corsipanel"/>
+			<img id="panel9" class="corsipanel"/>
+			<img id="panel10" class="corsipanel"/>
+			<img id="panel11" class="corsipanel"/>
+			<img id="panel12" class="corsipanel"/>
+			<img id="panel13" class="corsipanel"/>
+			<img id="panel14" class="corsipanel"/>
+			<img id="panel15" class="corsipanel"/>
+			<img id="panel16" class="corsipanel"/>
+			<img id="panel17" class="corsipanel"/>
+			<img id="panel18" class="corsipanel"/>
+			<img id="panel19" class="corsipanel"/>
+			<img id="panel20" class="corsipanel"/>
+
+		</div>
+
+	<script type="text/javascript">
+
+		document.getElementById('carousel').addEventListener("touchstart", doSomething, true);
+		document.getElementById('carousel').addEventListener("touchmove", doSomething, true);
+
+		$('.corsipanel').each(function(){
+			$(this).append('<div id="child'+$(this).attr('id')+'" class="infopanel">info for panel</div>');
+		})
+
+
+		var panels = [];
+		var startx = 0, vx =0, prevx = 0;
+		var lastPanel = document.getElementById("panel1");
+		var carousel = document.getElementById("carousel");
+		var lastevent = null;
+		var radius = 250;
+		var angle = 0;
+
+		function d2r(deg) {
+
+			return (deg * (Math.PI / 180));
+
+		}
+
+		panels.push(document.getElementById("panel1"));
+		panels.push(document.getElementById("panel2"));
+		panels.push(document.getElementById("panel3"));
+		panels.push(document.getElementById("panel4"));
+		panels.push(document.getElementById("panel5"));
+		panels.push(document.getElementById("panel6"));
+		panels.push(document.getElementById("panel7"));
+		panels.push(document.getElementById("panel8"));
+		panels.push(document.getElementById("panel9"));
+		panels.push(document.getElementById("panel10"));
+
+		panels.push(document.getElementById("panel11"));
+		panels.push(document.getElementById("panel12"));
+		panels.push(document.getElementById("panel13"));
+		panels.push(document.getElementById("panel14"));
+		panels.push(document.getElementById("panel15"));
+		panels.push(document.getElementById("panel16"));
+		panels.push(document.getElementById("panel17"));
+		panels.push(document.getElementById("panel18"));
+		panels.push(document.getElementById("panel19"));
+		panels.push(document.getElementById("panel20"));
+
+		images =   ["R9649",
+					"R9529",
+					"R6931",
+					"R9529",
+					"R7991",
+					"R7131",
+					"R6931",
+					"R4601",
+					"R6931",
+					"R3472",
+					"R2353",
+					"R9649",
+					"R9529",
+					"R6931",
+					"R9529",
+					"R7991",
+					"R7131",
+					"R6931",
+					"R4601",
+					"R6931",
+					"R3472",
+					"R2353"];
+
+
+		panels.forEach(function(el, i, arr){
+			el['index'] = i; // give us a reference inside individual handler
+			el["wtStack"] = ["transx", "transz", "rotateZ", "rotatex", "rotateY" ];
+			el['angle'] = angle;
+			el.src = "http://uat.cellarmasters.com.au/Content/ProductImages/" + images[i] + "_750.png";
+			el['flip'] = 0;
+			el['info'] = document.getElementById("child" +el.id+"");
+			angle += 360/(arr.length);
+
+		});
+
+		var waiting = false;
+		var transformProperty = ("undefined" !== typeof carousel.style.webkitTransform) ? "webkitTransform" : ("undefined" !== typeof carousel.style.mozTransform) ? "mozTransform" : ("undefined" !== typeof carousel.style.transform) ? "transform" : null;
+		function doSomething(e) {
+			e.preventDefault();
+			e.stopPropagation();
+
+			if (!waiting) {
+
+					waiting = true;
+
+					requestAnimationFrame(function(){
+
+						if (e.type == "touchstart")  {
+
+							startx = e.touches[0].clientX;
+							prevx = startx;
+						}
+
+						if (e.type == "touchmove" || e.type == "touchend") {
+							vx = prevx - e.touches[0].clientX;
+							prevx = e.touches[0].clientX;
+							var cur = carousel.style[transformProperty].substring(27);
+							var deg = parseInt(cur.replace('deg)',''), 10);
+							if (isNaN(deg)) deg = 0;
+							//this.innerText = deg ;
+							//var newx =  (vx >> 0) ?  (deg-1) : (deg+1 );
+							var newx = (deg - vx) ;
+							//alert(cur +" " + newx +" "+ vx);
+							//carousel.style.webkitTransform = "translateZ( -250px ) rotateY( " +0+ "deg ) rotateX( " +(((e.touches[0].clientY *2) % 250)/3)  + "deg)";
+
+							panels.forEach(function(el, i , arr){
+								el.angle = (el.angle >= 360) ? (el.angle % 360) : (el.angle <= 0) ? (360 - el.angle) : el.angle; // wrap around 360 -> 0
+								el.angle = (el.angle + vx);
+
+
+
+								var rad = d2r(el.angle);
+								el.wtStack.splice(0, 5,  "translateX("+Math.cos(rad) * radius+"px)", "translateZ("+((Math.sin(rad) * radius)/(e.touches[0].clientY/100))+"px)" ,"rotateZ(0deg)", "rotateX("+el.flip+"deg)", "rotateY(0deg)");
+
+								el.style[transformProperty] = el.wtStack.join(" ") ;
+
+							});
+
+
+						}
+
+						waiting = false;
+
+					});
+
+
+
+			}
+
+
+
+		}1
+
+
+
+	</script>
+
+	</body>
+
+</html>

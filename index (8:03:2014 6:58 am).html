@@ -1,0 +1,221 @@
+<!doctype html>
+<html>
+	<head>
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+	<style>
+
+		body, html {
+			width:100%;
+			height:100%;
+			
+		}
+
+		body {
+
+			-webkit-perspective: 1100px;
+-moz-perspective: 1100px;
+-o-perspective: 1100px;
+perspective: 1100px;
+		}
+
+	#carousel {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		-webkit-transform: translateZ( -150px ) rotateY( 0deg );
+		-moz-transform: translateZ( -150px );
+		-o-transform: translateZ( -150px );
+		transform: translateZ( -150px );
+		-webkit-transform-style: preserve-3d;
+		-moz-transform-style: preserve-3d;
+		-o-transform-style: preserve-3d;
+		transform-style: preserve-3d;
+		-webkit-transition: -webkit-transform 1ms;
+		-moz-transition: -moz-transform 1ms;
+		-o-transition: -o-transform 1ms;
+		transition: transform 1ms;
+	}
+
+		.corsipanel {
+			position: absolute;
+			width:70px;
+			height:500px;
+			font-family: Helvetica sans-serif;
+			text-align: center;
+			line-height: 100%;
+			-webkit-translate-origin:center center;
+			-webkit-transition:all 3ms ease-in-out;
+			background-size: cover;
+			background-image: url("stuff/sfbg.jpg");
+		}
+
+		#panel1 {
+			background-position: -175px top;
+			-webkit-transform: rotateY( 0deg ) translateZ( 150px );
+		}
+		#panel2 {
+			background-position: -350px top;
+			-webkit-transform: rotateY( 40deg ) translateZ( 150px );
+		}
+		#panel3 {
+			background-position: -525px top;
+			-webkit-transform: rotateY( 80deg ) translateZ( 150px );
+		}
+		#panel4 {
+			background-position: -700px top;
+			-webkit-transform: rotateY( 120deg ) translateZ( 150px );
+		}
+		#panel5 {
+			background-position: -875px top;
+			-webkit-transform: rotateY( 160deg ) translateZ( 150px );
+		}
+		#panel6 {
+			background-position: -1050px top;
+			-webkit-transform: rotateY( 200deg ) translateZ( 150px );
+		}
+		#panel7 {
+			background-position: -1225px top;
+			-webkit-transform: rotateY( 240deg ) translateZ( 150px );
+		}
+		#panel8 {
+			background-position: -1400px top;
+			-webkit-transform: rotateY( 280deg ) translateZ( 150px );
+		}
+		#panel9 {
+			background-position: -1575px top;
+			-webkit-transform: rotateY( 320deg ) translateZ( 150px );
+		}
+		#panel10 {
+			background-position: -1750px top;
+			-webkit-transform: rotateY( 360deg ) translateZ( 150px );
+		}
+	</style>
+
+	</head>
+	
+	<body>
+		<div id="carousel">
+			<div id="panel1" class="corsipanel"></div>
+			<div id="panel2" class="corsipanel"></div>
+			<div id="panel3" class="corsipanel"></div>
+			<div id="panel4" class="corsipanel"></div>
+			<div id="panel5" class="corsipanel"></div>
+			<div id="panel6" class="corsipanel"></div>
+			<div id="panel7" class="corsipanel"></div>
+			<div id="panel8" class="corsipanel"></div>
+			<div id="panel9" class="corsipanel"></div>
+			<div id="panel10" class="corsipanel"></div>
+			
+			</div>
+		</div>
+	<script type="text/javascript">
+		var panels = [];
+		var startx = 0, vx =0;
+		var lastPanel = document.getElementById("panel1");
+		var carousel = document.getElementById("carousel");
+		var lastevent = null;
+		window.addEventListener("deviceorientation", doSomething, true);
+		panels.push(document.getElementById("panel1"));
+		panels.push(document.getElementById("panel2"));
+		panels.push(document.getElementById("panel3"));
+		panels.push(document.getElementById("panel4"));
+		panels.push(document.getElementById("panel5"));
+		panels.push(document.getElementById("panel6"));
+		panels.push(document.getElementById("panel7"));
+		panels.push(document.getElementById("panel8"));
+		panels.push(document.getElementById("panel9"));
+		panels.push(document.getElementById("panel10"));
+			
+		panels.forEach(function(el, i, arr){
+			el['index'] = i; // give us a reference inside individual handler
+			el["wtStack"] = ["transx", "transz", "rotateZ", "rotatex", "rotateY" ];
+			el.addEventListener("touchstart", doSomething, true);
+			el.addEventListener("touchmove", doSomething, true);
+
+		});
+	
+
+		function doSomething(e) {
+			e.preventDefault();
+			e.stopPropagation();
+
+			if (e.type == "touchstart")  startx = e.touches[0].clientX;
+			if (e.type == "touchmove") {
+					 vx = startx - e.touches[0].clientX; 
+					startx = e.touches[0].clientX;
+					var cur = carousel.style.webkitTransform.substring(27);
+					var deg = parseInt(cur.replace('deg)',''));
+					if (isNaN(deg)) deg = 0;
+					//this.innerText = deg ;
+					//var newx =  (vx >> 0) ?  (deg-1) : (deg+1 );
+					var newx = (deg + vx) ;
+					//alert(cur +" " + newx +" "+ vx);
+					carousel.style.webkitTransform = "translateZ( -150px ) rotateY( " +newx+ "deg)";
+
+
+
+			}
+
+			if (e.type == "deviceorientation") {
+					
+					lastPanel.wtStack.splice(3, 2, "rotateX("+e.beta+"deg)", "rotateY("+e.gamma+"deg)");
+					lastPanel.style.webkitTransform = lastPanel.wtStack.join(" ") ;
+					lastevent = e;
+					
+			}else {
+				//this.wtStack.splice(0, 3,  "translateX("+e.touches[0].clientX+"px)", "translateZ("+e.touches[0].clientY+"px)", "rotateZ(-"+(e.touches[0].clientY)/100 * 90+"deg)" );
+				//this.style.webkitTransform = this.wtStack.join(" ");
+				
+				lastPanel = this;
+				lastevent = e;
+
+				
+			}
+
+			/*panels.forEach(function(el, i , arr){
+					
+					if (i === lastPanel.index) return; //skip "this"
+					else if (i > lastPanel.index) {
+
+						el.wtStack.splice(3, 1,  "rotateZ(-"+(lastevent.touches[0].clientY)/100 * 45+"deg)" );
+						el.style.webkitTransform = el.wtStack.join(" ");
+
+					} else if (i < lastPanel.index) {
+
+						el.wtStack.splice(3, 1, "rotateZ(-"+(lastevent.touches[0].clientY)/100 * 20+"deg)" );
+						el.style.webkitTransform = el.wtStack.join(" ");
+
+					}
+
+
+				});*/
+			//e.currentTarget.style.webkitTransition="all "+e.touches[0].clientY+"ms ease-in-out";
+		
+ 			//if (e.timeStamp.toString().substring(0,1) <= 4) panels.reverse();
+			/*panels.forEach(function(el, i){
+				if (this === el) {
+					el.style.webkitTransform = "translateX("+e.touches[0].clientX+"px)";
+					el.style.webkitTransform += " rotateZ(-"+(e.touches[0].clientY)/100 * 90+"deg)";
+					//el.style.webkitTransform += " rotateY(90deg)";
+				}
+				else if (chosen == false) {
+					
+					el.style.webkitTransform = "translateX(-"+e.touches[0].clientX/3+"px)";
+					el.style.webkitTransform += " rotateZ("+(e.touches[0].clientY)/100 * 9+"deg)";
+				
+					
+					chosen = true;
+				 }
+
+			}, this);*/
+
+		}
+ 
+
+		  
+	</script>
+
+	</body>
+
+</html>
